@@ -1,2 +1,11 @@
 # attendance-web
-This is the frontend UI repo for MFH attendance 
+
+Frontend UI for MFH attendance system built with Next.js.
+
+## Getting Started
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser.
