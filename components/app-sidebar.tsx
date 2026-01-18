@@ -1,5 +1,6 @@
 import * as React from "react";
 import Link from "next/link";
+import { BarChart3, PlusCircle } from "lucide-react";
 
 import {
   Sidebar,
@@ -16,10 +17,12 @@ const data = {
     {
       title: "Attendance",
       url: "/attendance",
+      icon: BarChart3,
     },
     {
       title: "New Attendance",
       url: "/new",
+      icon: PlusCircle,
     },
   ],
 };
@@ -27,20 +30,21 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
-      <SidebarHeader className="flex flex-col h-16 justify-center gap-2 border-b px-4">
-        <p>LOGO</p>
+      <SidebarHeader className="flex flex-col h-16 justify-center gap-2 border-b px-4 bg-primary">
+        <h1 className="text-lg font-bold text-primary-foreground">MFH</h1>
       </SidebarHeader>
       <SidebarContent className="mt-4">
-        {/* We create a SidebarGroup for each parent. */}
         <SidebarMenu>
           {data.items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
                 asChild
-                // isActive={item.isActive}
                 className="px-4"
               >
-                <Link href={item.url}>{item.title}</Link>
+                <Link href={item.url}>
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.title}</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

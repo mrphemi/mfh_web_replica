@@ -69,19 +69,19 @@ interface AttendanceData {
 const chartConfig = {
   totalAttendance: {
     label: "Total Attendance",
-    color: "hsl(var(--chart-1))",
+    color: "#3b82f6",
   },
   maleCount: {
     label: "Male",
-    color: "hsl(var(--chart-2))",
+    color: "#6366f1",
   },
   femaleCount: {
     label: "Female",
-    color: "hsl(var(--chart-3))",
+    color: "#ec4899",
   },
   childrenCount: {
     label: "Children",
-    color: "hsl(var(--chart-4))",
+    color: "#f59e0b",
   },
 } satisfies ChartConfig;
 
@@ -151,9 +151,11 @@ export default function AttendanceChartPage() {
 
   return (
     <div className="mx-auto max-w-7xl mb-10">
-      <div className="mb-6">
-        <h1 className="text-4xl font-bold">Attendance Analytics</h1>
-        <p className="text-muted-foreground">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          Attendance Analytics
+        </h1>
+        <p className="text-muted-foreground mt-2">
           View attendance trends and statistics
         </p>
       </div>
