@@ -1,26 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 
 import { QueryProvider } from "@/providers/queryProvider";
 
 import { AppSidebar } from "@/components/app-sidebar";
+import { SiteHeader } from "@/components/site-header";
 import {
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -35,24 +31,28 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${jakarta.variable} antialiased`}>
         <QueryProvider>
-          <SidebarProvider>
-            <AppSidebar />
+          <SidebarProvider
+            style={
+              {
+                "--sidebar-width": "calc(var(--spacing) * 72)",
+                "--header-height": "calc(var(--spacing) * 12)",
+              } as React.CSSProperties
+            }
+          >
+            <AppSidebar variant="inset" />
             <SidebarInset>
-              <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-card/50 backdrop-blur-sm">
-                <SidebarTrigger className="-ml-1 cursor-pointer" />
-                <div className="ml-auto">
-                  <h2 className="text-sm font-semibold text-primary">MFH Attendance System</h2>
+              <SiteHeader />
+              <div className="flex flex-1 flex-col">
+                <div className="@container/main flex flex-1 flex-col p-4 md:p-6">
+                  {children}
                 </div>
-              </header>
-              <div className="mt-4 px-4">{children}</div>
-              <Toaster />
+              </div>
             </SidebarInset>
           </SidebarProvider>
         </QueryProvider>
+        <Toaster />
       </body>
     </html>
   );

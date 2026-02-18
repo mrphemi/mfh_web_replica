@@ -1,56 +1,121 @@
-import * as React from "react";
-import Link from "next/link";
-import { BarChart3, PlusCircle } from "lucide-react";
+"use client"
+
+import * as React from "react"
+import Link from "next/link"
+import {
+  BarChart3,
+  PlusCircle,
+  Zap,
+} from "lucide-react"
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
-} from "@/components/ui/sidebar";
+  SidebarSeparator,
+} from "@/components/ui/sidebar"
 
-const data = {
-  items: [
-    {
-      title: "Attendance",
-      url: "/attendance",
-      icon: BarChart3,
-    },
-    {
-      title: "New Attendance",
-      url: "/new",
-      icon: PlusCircle,
-    },
-  ],
-};
+const navMain = [
+  {
+    title: "Attendance",
+    url: "/attendance",
+    icon: BarChart3,
+  },
+]
+
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar {...props}>
-      <SidebarHeader className="flex flex-col h-16 justify-center gap-2 border-b px-4 bg-primary">
-        <h1 className="text-lg font-bold text-primary-foreground">MFH</h1>
-      </SidebarHeader>
-      <SidebarContent className="mt-4">
+    <Sidebar collapsible="offcanvas" {...props}>
+      <SidebarHeader>
         <SidebarMenu>
-          {data.items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton
-                asChild
-                className="px-4"
-              >
-                <Link href={item.url}>
-                  <item.icon className="h-4 w-4" />
-                  <span>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              size="lg"
+              className="hover:bg-sidebar-accent/60 data-[slot=sidebar-menu-button]:p-2!"
+            >
+              <a href="/">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <Zap className="size-4" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold text-sidebar-foreground">MFH</span>
+                  <span className="truncate text-xs text-sidebar-foreground/50">Attendance</span>
+                </div>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent className="flex flex-col gap-1.5">
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  tooltip="New Attendance"
+                  className="bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/85 hover:text-sidebar-primary-foreground active:bg-sidebar-primary/85 min-w-8 duration-150 ease-linear font-medium"
+                >
+                  <Link href="/new">
+                    <PlusCircle />
+                    <span>New Attendance</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+
+            <SidebarSeparator />
+
+            <SidebarGroupLabel className="text-sidebar-foreground/40 uppercase tracking-widest text-[10px]">
+              Menu
+            </SidebarGroupLabel>
+            <SidebarMenu>
+              {navMain.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    className="text-sidebar-foreground/80 hover:text-sidebar-accent-foreground"
+                  >
+                    <Link href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
       </SidebarContent>
-      <SidebarRail />
+
+      <SidebarFooter>
+        <SidebarSeparator />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" className="hover:bg-sidebar-accent/60">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-full bg-sidebar-primary/20 text-sidebar-primary text-xs font-bold">
+                MA
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium text-sidebar-foreground">MFH Admin</span>
+                <span className="truncate text-xs text-sidebar-foreground/45">admin@mfh.org</span>
+              </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
-  );
+  )
 }
