@@ -76,18 +76,19 @@ interface AttendanceData {
 }
 
 const chartConfig = {
-  totalAttendance: { label: "Total",    color: "var(--chart-1)" },
-  maleCount:       { label: "Male",     color: "var(--chart-1)" },
-  femaleCount:     { label: "Female",   color: "var(--chart-2)" },
-  childrenCount:   { label: "Children", color: "var(--chart-4)" },
+  totalAttendance: { label: "Total", color: "var(--chart-1)" },
+  maleCount: { label: "Male", color: "var(--chart-5)" },
+  femaleCount: { label: "Female", color: "var(--chart-3)" },
+  childrenCount: { label: "Children", color: "var(--chart-4)" },
 } satisfies ChartConfig;
 
 const fetchAttendanceData = async (startDate: Date, endDate: Date) => {
   const response = await fetch(
-    `/api/attendance/range?startDate=${format(startDate, "yyyy-MM-dd")}&endDate=${format(endDate, "yyyy-MM-dd")}`
+    `/api/attendance/range?startDate=${format(startDate, "yyyy-MM-dd")}&endDate=${format(endDate, "yyyy-MM-dd")}`,
   );
   const result = await response.json();
-  if (!result.success) throw new Error(result.message || "Failed to fetch attendance data");
+  if (!result.success)
+    throw new Error(result.message || "Failed to fetch attendance data");
   return result.data as AttendanceData[];
 };
 
@@ -97,7 +98,11 @@ export default function AttendanceChartPage() {
     to: new Date(),
   });
 
-  const { data: attendanceData = [], isLoading, error } = useQuery({
+  const {
+    data: attendanceData = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["attendance", date?.from, date?.to],
     queryFn: () => fetchAttendanceData(date!.from!, date!.to!),
     enabled: !!date?.from && !!date?.to,
@@ -108,11 +113,20 @@ export default function AttendanceChartPage() {
     const to = today;
     let from: Date;
     switch (range) {
-      case "last-month":    from = subMonths(today, 1); break;
-      case "last-3-months": from = subMonths(today, 3); break;
-      case "last-6-months": from = subMonths(today, 6); break;
-      case "last-year":     from = subYears(today, 1);  break;
-      default:              from = subMonths(today, 1);
+      case "last-month":
+        from = subMonths(today, 1);
+        break;
+      case "last-3-months":
+        from = subMonths(today, 3);
+        break;
+      case "last-6-months":
+        from = subMonths(today, 6);
+        break;
+      case "last-year":
+        from = subYears(today, 1);
+        break;
+      default:
+        from = subMonths(today, 1);
     }
     setDate({ from, to });
   };
@@ -128,14 +142,13 @@ export default function AttendanceChartPage() {
   const stats = useMemo(() => {
     if (!attendanceData.length) return null;
     const total = attendanceData.reduce((s, r) => s + r.totalAttendance, 0);
-    const peak  = Math.max(...attendanceData.map((r) => r.totalAttendance));
-    const avg   = Math.round(total / attendanceData.length);
+    const peak = Math.max(...attendanceData.map((r) => r.totalAttendance));
+    const avg = Math.round(total / attendanceData.length);
     return { sessions: attendanceData.length, total, peak, avg };
   }, [attendanceData]);
 
   return (
     <div className="flex flex-col gap-6 max-w-7xl mx-auto w-full">
-
       {/* Page header + controls */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
@@ -165,13 +178,16 @@ export default function AttendanceChartPage() {
                 size="sm"
                 className={cn(
                   "w-60 justify-start text-left font-normal",
-                  !date && "text-muted-foreground"
+                  !date && "text-muted-foreground",
                 )}
               >
                 <CalendarIcon className="mr-2 size-3.5 shrink-0" />
                 {date?.from ? (
                   date.to ? (
-                    <>{format(date.from, "dd MMM y")} – {format(date.to, "dd MMM y")}</>
+                    <>
+                      {format(date.from, "dd MMM y")} –{" "}
+                      {format(date.to, "dd MMM y")}
+                    </>
                   ) : (
                     format(date.from, "dd MMM y")
                   )
@@ -211,10 +227,14 @@ export default function AttendanceChartPage() {
       ) : stats ? (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {[
-            { label: "Sessions",       value: stats.sessions,              icon: BarChart2   },
-            { label: "Total Attended", value: stats.total.toLocaleString(), icon: Users       },
-            { label: "Peak Session",   value: stats.peak,                  icon: Zap         },
-            { label: "Avg Attendance", value: stats.avg,                   icon: TrendingUp  },
+            { label: "Sessions", value: stats.sessions, icon: BarChart2 },
+            {
+              label: "Total Attended",
+              value: stats.total.toLocaleString(),
+              icon: Users,
+            },
+            { label: "Peak Session", value: stats.peak, icon: Zap },
+            { label: "Avg Attendance", value: stats.avg, icon: TrendingUp },
           ].map(({ label, value, icon: Icon }) => (
             <Card key={label}>
               <CardHeader className="pb-2 flex-row items-center justify-between space-y-0">
@@ -247,7 +267,9 @@ export default function AttendanceChartPage() {
         <Card>
           <CardContent className="py-16 flex flex-col items-center gap-3 text-center">
             <Users className="size-9 text-muted-foreground/30" />
-            <p className="text-sm text-muted-foreground">No records found for this date range.</p>
+            <p className="text-sm text-muted-foreground">
+              No records found for this date range.
+            </p>
           </CardContent>
         </Card>
       )}
@@ -258,7 +280,9 @@ export default function AttendanceChartPage() {
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader className="pb-0">
-                <CardTitle className="text-sm font-semibold">Total Attendance Trend</CardTitle>
+                <CardTitle className="text-sm font-semibold">
+                  Total Attendance Trend
+                </CardTitle>
                 <CardDescription>
                   {date?.from && format(date.from, "dd MMM yyyy")} –{" "}
                   {date?.to && format(date.to, "dd MMM yyyy")}
@@ -267,17 +291,47 @@ export default function AttendanceChartPage() {
               <CardContent className="pt-4">
                 <ChartContainer config={chartConfig}>
                   <ResponsiveContainer width="100%" height={260}>
-                    <AreaChart data={chartData} margin={{ left: -16, right: 4 }}>
+                    <AreaChart
+                      data={chartData}
+                      margin={{ left: -16, right: 4 }}
+                    >
                       <defs>
-                        <linearGradient id="fillTotal" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%"  stopColor="var(--chart-1)" stopOpacity={0.25} />
-                          <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0} />
+                        <linearGradient
+                          id="fillTotal"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="var(--chart-1)"
+                            stopOpacity={0.25}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="var(--chart-1)"
+                            stopOpacity={0}
+                          />
                         </linearGradient>
                       </defs>
                       <CartesianGrid vertical={false} stroke="var(--border)" />
-                      <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} tick={{ fontSize: 11 }} />
-                      <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
-                      <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                      <XAxis
+                        dataKey="date"
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
+                        tick={{ fontSize: 11 }}
+                      />
+                      <YAxis
+                        tickLine={false}
+                        axisLine={false}
+                        tick={{ fontSize: 11 }}
+                      />
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent />}
+                      />
                       <Area
                         type="monotone"
                         dataKey="totalAttendance"
@@ -293,21 +347,53 @@ export default function AttendanceChartPage() {
 
             <Card>
               <CardHeader className="pb-0">
-                <CardTitle className="text-sm font-semibold">Attendance Breakdown</CardTitle>
-                <CardDescription>Male, female, and children comparison</CardDescription>
+                <CardTitle className="text-sm font-semibold">
+                  Attendance Breakdown
+                </CardTitle>
+                <CardDescription>
+                  Male, female, and children comparison
+                </CardDescription>
               </CardHeader>
               <CardContent className="pt-4">
                 <ChartContainer config={chartConfig}>
                   <ResponsiveContainer width="100%" height={260}>
                     <BarChart data={chartData} margin={{ left: -16, right: 4 }}>
                       <CartesianGrid vertical={false} stroke="var(--border)" />
-                      <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} tick={{ fontSize: 11 }} />
-                      <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
-                      <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                      <XAxis
+                        dataKey="date"
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
+                        tick={{ fontSize: 11 }}
+                      />
+                      <YAxis
+                        tickLine={false}
+                        axisLine={false}
+                        tick={{ fontSize: 11 }}
+                      />
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent />}
+                      />
                       <Legend wrapperStyle={{ fontSize: 11 }} />
-                      <Bar dataKey="maleCount"     fill="var(--chart-1)" radius={[3, 3, 0, 0]} maxBarSize={20} />
-                      <Bar dataKey="femaleCount"   fill="var(--chart-2)" radius={[3, 3, 0, 0]} maxBarSize={20} />
-                      <Bar dataKey="childrenCount" fill="var(--chart-4)" radius={[3, 3, 0, 0]} maxBarSize={20} />
+                      <Bar
+                        dataKey="maleCount"
+                        fill="var(--chart-5)"
+                        radius={[3, 3, 0, 0]}
+                        maxBarSize={20}
+                      />
+                      <Bar
+                        dataKey="femaleCount"
+                        fill="var(--chart-3)"
+                        radius={[3, 3, 0, 0]}
+                        maxBarSize={20}
+                      />
+                      <Bar
+                        dataKey="childrenCount"
+                        fill="var(--chart-4)"
+                        radius={[3, 3, 0, 0]}
+                        maxBarSize={20}
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </ChartContainer>
@@ -317,8 +403,12 @@ export default function AttendanceChartPage() {
 
           <Card>
             <CardHeader className="pb-0">
-              <CardTitle className="text-sm font-semibold">Attendance Records</CardTitle>
-              <CardDescription>All records for the selected range</CardDescription>
+              <CardTitle className="text-sm font-semibold">
+                Attendance Records
+              </CardTitle>
+              <CardDescription>
+                All records for the selected range
+              </CardDescription>
             </CardHeader>
             <CardContent className="p-0 mt-4">
               <Table>
@@ -329,8 +419,12 @@ export default function AttendanceChartPage() {
                     <TableHead className="text-xs">Service</TableHead>
                     <TableHead className="text-right text-xs">Male</TableHead>
                     <TableHead className="text-right text-xs">Female</TableHead>
-                    <TableHead className="text-right text-xs">Children</TableHead>
-                    <TableHead className="text-right text-xs font-semibold">Total</TableHead>
+                    <TableHead className="text-right text-xs">
+                      Children
+                    </TableHead>
+                    <TableHead className="text-right text-xs font-semibold">
+                      Total
+                    </TableHead>
                     <TableHead className="pr-6 w-20" />
                   </TableRow>
                 </TableHeader>
@@ -348,18 +442,32 @@ export default function AttendanceChartPage() {
                           {record.activityType}
                         </span>
                       </TableCell>
-                      <TableCell className="text-right text-sm tabular-nums">{record.maleCount}</TableCell>
-                      <TableCell className="text-right text-sm tabular-nums">{record.femaleCount}</TableCell>
-                      <TableCell className="text-right text-sm tabular-nums">{record.childrenCount}</TableCell>
+                      <TableCell className="text-right text-sm tabular-nums">
+                        {record.maleCount}
+                      </TableCell>
+                      <TableCell className="text-right text-sm tabular-nums">
+                        {record.femaleCount}
+                      </TableCell>
+                      <TableCell className="text-right text-sm tabular-nums">
+                        {record.childrenCount}
+                      </TableCell>
                       <TableCell className="text-right text-sm font-semibold tabular-nums">
                         {record.totalAttendance}
                       </TableCell>
                       <TableCell className="pr-6">
                         <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button variant="ghost" size="icon" className="size-7 text-muted-foreground hover:text-foreground">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-7 text-muted-foreground hover:text-foreground"
+                          >
                             <Pencil className="size-3.5" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="size-7 text-muted-foreground hover:text-destructive">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-7 text-muted-foreground hover:text-destructive"
+                          >
                             <Trash2 className="size-3.5" />
                           </Button>
                         </div>

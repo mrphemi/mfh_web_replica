@@ -132,8 +132,9 @@ export function AttendanceForm() {
                 <FormControl>
                   <Input
                     type="number"
+                    min="0"
                     {...field}
-                    onChange={(event) => field.onChange(+event.target.value)}
+                    onChange={(event) => field.onChange(event.target.value)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -150,8 +151,9 @@ export function AttendanceForm() {
                 <FormControl>
                   <Input
                     type="number"
+                    min="0"
                     {...field}
-                    onChange={(event) => field.onChange(+event.target.value)}
+                    onChange={(event) => field.onChange(event.target.value)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -168,8 +170,9 @@ export function AttendanceForm() {
                 <FormControl>
                   <Input
                     type="number"
+                    min="0"
                     {...field}
-                    onChange={(event) => field.onChange(+event.target.value)}
+                    onChange={(event) => field.onChange(event.target.value)}
                   />
                 </FormControl>
                 <FormMessage />

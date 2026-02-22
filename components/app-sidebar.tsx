@@ -20,6 +20,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
+  useSidebar,
 } from "@/components/ui/sidebar"
 
 const navMain = [
@@ -32,6 +33,14 @@ const navMain = [
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { isMobile, setOpenMobile } = useSidebar()
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false)
+    }
+  }
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -66,7 +75,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   tooltip="New Attendance"
                   className="bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/85 hover:text-sidebar-primary-foreground active:bg-sidebar-primary/85 min-w-8 duration-150 ease-linear font-medium"
                 >
-                  <Link href="/new">
+                  <Link href="/new" onClick={handleLinkClick}>
                     <PlusCircle />
                     <span>New Attendance</span>
                   </Link>
@@ -87,7 +96,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     tooltip={item.title}
                     className="text-sidebar-foreground/80 hover:text-sidebar-accent-foreground"
                   >
-                    <Link href={item.url}>
+                    <Link href={item.url} onClick={handleLinkClick}>
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
