@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { format } from "date-fns";
 import { ChevronDownIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -28,7 +29,7 @@ export function DatePicker({ onChange, value }: DatePickerProps) {
             id="date"
             className="w-full justify-between font-normal"
           >
-            {value ? value.toLocaleDateString() : "Select date"}
+            {value ? format(value, "dd/MM/yyyy") : "Select date"}
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>
@@ -40,6 +41,7 @@ export function DatePicker({ onChange, value }: DatePickerProps) {
             mode="single"
             selected={value}
             captionLayout="dropdown"
+            disabled={{ after: new Date() }}
             onSelect={(date) => {
               setOpen(false);
               onChange(date!);

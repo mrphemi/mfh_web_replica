@@ -6,6 +6,7 @@ import { z } from "zod";
 import { Save } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { format } from "date-fns";
 
 import { SelectInput } from "@/components/select";
 import { DatePicker } from "./date-picker";
@@ -66,7 +67,7 @@ export function AttendanceForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const formattedDate = values.attendanceDate.toISOString().split("T")[0];
+    const formattedDate = format(values.attendanceDate, "yyyy-MM-dd");
 
     const payload = {
       ...values,
@@ -134,7 +135,10 @@ export function AttendanceForm() {
                     type="number"
                     min="0"
                     {...field}
-                    onChange={(event) => field.onChange(event.target.value)}
+                    value={isNaN(field.value) ? "" : field.value}
+                    onChange={(event) =>
+                      field.onChange(event.target.valueAsNumber)
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -153,7 +157,10 @@ export function AttendanceForm() {
                     type="number"
                     min="0"
                     {...field}
-                    onChange={(event) => field.onChange(event.target.value)}
+                    value={isNaN(field.value) ? "" : field.value}
+                    onChange={(event) =>
+                      field.onChange(event.target.valueAsNumber)
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -172,7 +179,10 @@ export function AttendanceForm() {
                     type="number"
                     min="0"
                     {...field}
-                    onChange={(event) => field.onChange(event.target.value)}
+                    value={isNaN(field.value) ? "" : field.value}
+                    onChange={(event) =>
+                      field.onChange(event.target.valueAsNumber)
+                    }
                   />
                 </FormControl>
                 <FormMessage />

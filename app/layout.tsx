@@ -1,6 +1,8 @@
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 
+import { auth0 } from "@/lib/auth0";
 import { QueryProvider } from "@/providers/queryProvider";
 
 import { AppSidebar } from "@/components/app-sidebar";
@@ -24,11 +26,14 @@ export const metadata: Metadata = {
   description: "Church attendance management system",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth0.getSession();
+  if (!session) redirect("/auth/login");
+
   return (
     <html lang="en">
       <body className={`${jakarta.variable} antialiased`}>
@@ -41,7 +46,7 @@ export default function RootLayout({
               } as React.CSSProperties
             }
           >
-            <AppSidebar variant="inset" />
+            <AppSidebar variant="inset" user={session.user} />
             <SidebarInset>
               <SiteHeader />
               <div className="flex flex-1 flex-col">
